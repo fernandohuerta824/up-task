@@ -1,0 +1,20 @@
+{
+    "name": "ferna/php",
+    "autoload": {
+        "psr-4": {
+            "Model\\": "./models",
+            "MVC\\": "./",
+            "Controller\\": "./controllers"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fernando Huerta",
+            "email": "fernando.huerta4313@alumnos.udg.mx"
+        }
+    ],
+    "require": {
+        "intervention/image": "^3.9",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
