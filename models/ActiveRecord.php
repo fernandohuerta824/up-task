@@ -14,25 +14,14 @@ abstract class ActiveRecord {
 
     protected static array $errores = [];
 
-    protected int $id;
-    protected Imagen $imagen;
-
-    public function __construct(array $args = []) {
-        foreach($args as $key => $value) {
-            if(property_exists($this, $key)) {
-                if(gettype($this->$key) === 'number') 
-                    $this->$key = intval($value);
-                else
-                    $this->$key = $value ?? null;
-            }
-        }
-    }
-
+    public int $id;
+    public Imagen $imagen;
+ 
     public static function setDB(mysqli $db) {
         self::$db = $db;
     }
     
-    public function guardar(): mysqli|bool {
+    public function guardar() {
         if(!empty(static::$errores)) 
             return false;
         $atributos = $this->sanitizarAtributos();
@@ -40,7 +29,7 @@ abstract class ActiveRecord {
         $columnas = join(', ', array_keys($atributos));
 
         $valores = join("', '", array_values($atributos));
-
+        
         if($this->id) {
             $registro = self::encontrarPorID($this->id);
 
@@ -54,24 +43,27 @@ abstract class ActiveRecord {
             $query = "INSERT INTO " . static::$tabla . " ($columnas) VALUES ('$valores')";
         }
 
-        return self::$db->query($query);
+        self::$db->query($query);
+        
+        return self::$db->insert_id ?? false;
     }
 
     private function sanitizarAtributos(): array {
         $atributos = $this->atributos();
-
         foreach($atributos as $key => $value) {
             // if($key === 'imagen') {
-            //     $atributos[$key] = $value->getNombreFinal();
-            //     continue;
-            // }
-
+                //     $atributos[$key] = $value->getNombreFinal();
+                //     continue;
+                // }
+                
             if($key === 'id') 
                 continue;
-
-            $atributos[$key] = self::$db->real_escape_string($value);
+            
+            if(gettype($value) === 'string')
+                $atributos[$key] = self::$db->real_escape_string($value);
         }
-
+        
+       
         return $atributos;
     }
 
@@ -83,7 +75,7 @@ abstract class ActiveRecord {
         return $atributos;
     }
 
-    public static function encontrarPorID(int|string $id): ActiveRecord {
+    public static function encontrarPorID(int|string $id): ActiveRecord|null {
         $id = intval($id);
         $query = "SELECT * FROM " . static::$tabla . " WHERE id = $id";
 
@@ -118,7 +110,6 @@ abstract class ActiveRecord {
         }
 
         $resultado->free();
-
         return $array;
     }
 
@@ -126,28 +117,77 @@ abstract class ActiveRecord {
         return static::$errores;
     }   
 
-    public function todos(): array {
+    public static function todos(): array {
         $query = "SELECT * FROM " . static::$tabla;
 
         return self::consultar($query);
     }
 
-    public function obtener(int $cantidad, int $saltar): array {
+    public static function obtener(int $cantidad, int $saltar): array {
         $query = "SELECT * FROM " . static::$tabla . " LIMIT $cantidad OFFSET $saltar";
 
         return self::consultar($query);
     }
 
-    public function where(string $columna, string $valor): array {
-        $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valor'";
+    public static function SQL(string $consulta): array {
+        return self::consultar($consulta);
+    }
 
-        return self::consultar($query);
+    public static function where(string $columna, string $valor): ActiveRecord|null {
+        $valorQuery = self::$db->real_escape_string($valor);
+        $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valorQuery' LIMIT 1";
+
+        return self::consultar($query)[0];
     }
 
     public function borrar(): mysqli|bool {
         $query = "DELETE FROM " . static::$tabla . " WHERE id = " . $this->id;
 
         return self::$db->query($query);
+    }
+
+    public function sincronizar($args = []) {
+        foreach($args as $key => $value) {
+            if($key === 'id')
+                continue;
+            if(property_exists($this, $key) && !is_null($value))
+                if(gettype($this->$key) === 'integer' || gettype($this->$key) === 'double')
+                    $this->$key = !$value ?  0 : $value;
+                else
+                    $this->$key = $value;
+
+        }
+    }
+
+    public function resetar() {
+        foreach($this as $key => $value) {
+            if($key === 'id')
+                continue;
+            switch (gettype($value)) {
+                case 'string':
+                    $this->$key = '';
+                    break;
+                case 'integer':
+                case 'double': // Los números flotantes también caen aquí.
+                    $this->$key = 0;
+                    break;
+                case 'array':
+                    $this->$key = [];
+                    break;
+                case 'object':
+                    $this->$key = null;
+                    break; // Opcional: o puedes devolver una nueva instancia.
+                case 'boolean':
+                    $this->$key = false;
+                    break;
+                case 'NULL':
+                    $this->$key = null;
+                    break;
+                default:
+                    $this->$key = null;
+                    break; // Para otros tipos no especificados.
+            }
+        }
     }
 
     public function getId(): int {
