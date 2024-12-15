@@ -2,6 +2,8 @@
     <?php include __DIR__ . '/../template/nombre-sitio.php' ?>
 
     <div class="contenedor-sm">
+    <?php include __DIR__ . '/../template/alertas.php' ?>
+    <?php if($mostrarFormulario) : ?>
         <p class="descripcion-pagina">Coloca tu nueva contraseña</p>
 
         <form class="formulario" method="post">
@@ -27,5 +29,6 @@
 
             <input type="submit" class="boton" value="Restablecer Contraseña">
         </form>
+        <?php endif ?>
     </div>
 </div>

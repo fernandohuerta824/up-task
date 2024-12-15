@@ -2,6 +2,7 @@
     <?php include __DIR__ . '/../template/nombre-sitio.php' ?>
     
     <div class="contenedor-sm">
+        <?php include __DIR__ . '/../template/alertas.php' ?>
         <p class="descripcion-pagina">Ingresa tu email para enviarte instrucciones</p>
 
         <form class="formulario" method="post">
@@ -12,6 +13,7 @@
                     id="email"
                     name="email"
                     placeholder="Escribe tu email"
+                    value="<?php echo $usuario->email ?>"
                 >
             </div>
 

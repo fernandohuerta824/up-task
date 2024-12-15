@@ -60,14 +60,65 @@ class LoginController {
     }
 
     public static function olvidarPassword(Router $router) {
+        $alertas = [];
+        $usuario = new Usuario();
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $usuario = new Usuario(['email' => $_POST['email']]);
+
+            $alertas = $usuario->validarEmail();;
+            if(!isset($alertas['error'])) {
+                $usuarioExistente = Usuario::where('email', $usuario->email);
+
+                if($usuarioExistente && $usuarioExistente->confirmado === 1) {
+                    $usuarioExistente->crearToken();
+                    $usuarioExistente->guardar();
+                    $email = new Email([
+                        'nombre' => $usuarioExistente->nombre,
+                        'email' => $usuarioExistente->email,
+                        'token' => $usuarioExistente->token
+                    ]);
+                    $email->enviarRestablecerPassword();
+                }
+                $usuario->resetar();
+                $alertas['exito'][] = 'Si el correo esta registrado y tu cuenta esta confirmada te enviaremos un email';
+            }
+        }
+
         $router->render('auth/olvidar-password', [
-            'titulo' => 'Olvidar contraseña'
+            'titulo' => 'Olvidar contraseña',
+            'errores' => $alertas,
+            'usuario' => $usuario
         ]);
     }
 
     public static function restablecerPassword(Router $router) {
+        $token = s($_GET['token']);
+
+        if(!$token) return header('Location: /');
+        $mostrarFormulario = true;
+        $usuario = Usuario::where('token', $token);
+        $alertas = [];
+        if(!$usuario || $usuario->confirmado === 0) {
+            $alertas['error'][] = 'Enlace no valido para restablecer tu contraseña, si no has confirmado tu cuenta, confirmala primero';
+            $mostrarFormulario = false;
+        } else if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $usuario->password = $_POST['password'];
+            $usuario->password2 = $_POST['password2'];
+            
+            $alertas = $usuario->validarPassword();
+
+            if(!isset($alertas['error'])) {
+                $usuario->hashPassword();
+                $usuario->token = '';
+                $usuario->guardar();
+                return header('Location: /');
+            }
+        }
+
         $router->render('auth/restablecer-password', [
-            'titulo' => 'Restablecer contraseña'
+            'titulo' => 'Restablecer contraseña',
+            'errores' => $alertas,
+            'mostrarFormulario' => $mostrarFormulario
         ]);
     }
 
@@ -84,8 +135,8 @@ class LoginController {
         $alertas = [];
         try {
             $usuario = Usuario::where('token', $token);
-            if(!$usuario) 
-                $alertas['error'][] = 'Enlace no valido, si creaste una cuenta hace mas de 3 meses y no la confirmaste, tu cuenta fue borrada, registrate de nuevo';
+            if(!$usuario || $usuario->confirmado === 1) 
+                $alertas['error'][] = 'Enlace no valido para confirmar tu cuenta, si creaste una cuenta hace mas de 3 meses y no la confirmaste, tu cuenta fue borrada, registrate de nuevo';
             else {
                 $usuario->token = '';
                 $usuario->confirmado = 1;

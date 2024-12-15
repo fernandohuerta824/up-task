@@ -66,4 +66,33 @@ class Email {
 
         ");
     }
+
+    public function enviarRestablecerPassword() {
+        $this->enviarEmail('Restablecer contraseña', "
+        <html>
+        <div style='font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;'>
+
+            <div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);'>
+                <h1 style='background: linear-gradient(to right, #DB2777 0%, #f05aab 100%); color: transparent; background-clip: text; -webkit-background-clip: text; font-size: 3rem; text-align: center; margin-top: 20px;'>
+                    UpTask
+                </h1>
+                <p style='font-size: 1.5rem; color: #6b7280; line-height: 1.8;'>
+                    Hola <strong>" . s($this->nombre) . "</strong>
+                </p>
+                <p style='font-size: 1.5rem; color: #6b7280; line-height: 1.8;'>
+                    Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para proceder:
+                </p>
+                <a href='http://192.168.100.188:3000/restablecer-password?token=" . s($this->token) . "' 
+                style='display: inline-block; background-color: #DB2777; color: #ffffff; text-decoration: none; padding: 10px 20px; font-size: 1.5rem; border-radius: 5px; text-align: center; margin: 20px 0;'>
+                    Restablecer Contraseña
+                </a>
+                <p style='font-size: 1.5rem; color: #6b7280; line-height: 1.8;'>
+                    Si no solicitaste restablecer tu contraseña, ignora este correo.
+                </p>
+            </div>
+
+        </div>
+        </html>
+        ");
+    }
 }
