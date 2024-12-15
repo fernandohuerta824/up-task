@@ -78,8 +78,27 @@ class LoginController {
     }
 
     public static function confirmar(Router $router) {
+        $token = S($_GET['token']);
+        if(!$token) return header('Location: /');
+
+        $alertas = [];
+        try {
+            $usuario = Usuario::where('token', $token);
+            if(!$usuario) 
+                $alertas['error'][] = 'Enlace no valido, si creaste una cuenta hace mas de 3 meses y no la confirmaste, tu cuenta fue borrada, registrate de nuevo';
+            else {
+                $usuario->token = '';
+                $usuario->confirmado = 1;
+                $usuario->guardar();
+                $alertas['exito'][] = 'Cuenta confirmada, Ya puedes iniciar sesion';
+            }
+        } catch (\Throwable $th) {
+            $alertas['error'][] = 'Algo salio mal, intentelo de nuevo, si el problema persiste contacte a soporte';
+        }
+
         $router->render('auth/confirmar', [
-            'titulo' => 'Cuenta confirmada'
+            'titulo' => 'Cuenta confirmada',
+            'errores' => $alertas
         ]);
     }
 

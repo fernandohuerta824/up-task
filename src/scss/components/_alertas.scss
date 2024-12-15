@@ -13,4 +13,10 @@
         border-left: 1rem solid v.$rojo;
         color: v.$rojo;
     }
+
+    &.exito {
+        background-color: lighten(v.$verde, 60);
+        border-left: 1rem solid v.$verde;
+        color: v.$verde;
+    }
 }
