@@ -1,6 +1,6 @@
 @use "base/mixins" as m;
 @use "base/variables" as v;
 
-.login {
-    @include m.layout(v.$cyan);
+.crear {
+    @include m.layout(v.$morado);
 }

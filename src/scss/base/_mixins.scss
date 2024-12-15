@@ -45,3 +45,32 @@
     gap: $espaciado;
     grid-template-columns: repeat($columnas, 1fr);
 }
+
+@mixin layout($color) {
+
+    @include tablet {  
+        max-height: 100dvh;
+        overflow: hidden;
+    } 
+    .uptask {
+        background: linear-gradient(to right, $color 0%, lighten($color, 30) 100%);
+        color: transparent;
+        background-clip: text;
+        font-size: 7rem;
+        text-align: center;
+        margin-top: 5rem;
+        @include tablet { 
+            font-size: 10rem;
+        } 
+    }
+
+    .boton {
+        @include boton($color, v.$blanco)
+    }
+
+    .acciones {
+        a {
+            color: $color;
+        }
+    }
+}

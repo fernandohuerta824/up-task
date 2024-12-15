@@ -1,10 +1,20 @@
-<div class="contenedor login">
+<div class="contenedor crear">
     <?php include __DIR__ . '/../template/nombre-sitio.php' ?>
-    
+
     <div class="contenedor-sm">
-        <p class="descripcion-pagina">Iniciar Sesión</p>
+        <p class="descripcion-pagina">Crea tu cuenta en UpTask</p>
 
         <form class="formulario" method="post">
+        <div class="campo">
+                <label for="nombre">Nombre: </label>
+                <input 
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Escribe tu nombre"
+                >
+            </div>
+
             <div class="campo">
                 <label for="email">Email: </label>
                 <input 
@@ -25,11 +35,21 @@
                 >
             </div>
 
-            <input type="submit" class="boton" value="Iniciar Sesión">
+            <div class="campo">
+                <label for="password2">Repetir Contraseña: </label>
+                <input 
+                    type="password"
+                    id="password2"
+                    name="password2"
+                    placeholder="Repite tu contraseña"
+                >
+            </div>
+
+            <input type="submit" class="boton" value="Crear Cuenta">
         </form>
 
         <div class="acciones">
-            <a href="/crear-cuenta">¿Aún no tienes una cuenta? obtener una</a>
+            <a href="/">¿Ya tienes cuenta? Iniciar Sesion</a>
             <a href="/olvidar-password">¿Olvidaste tu contraseña?</a>
         </div>
     </div>
