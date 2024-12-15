@@ -5,7 +5,7 @@
         <p class="descripcion-pagina">Crea tu cuenta en UpTask</p>
 
         <form class="formulario" method="post">
-        <div class="campo">
+            <div class="campo">
                 <label for="nombre">Nombre: </label>
                 <input 
                     type="text"

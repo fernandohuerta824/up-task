@@ -1,0 +1,6 @@
+@use "base/mixins" as m;
+@use "base/variables" as v;
+
+.restablecer {
+    @include m.layout(v.$azul);
+}

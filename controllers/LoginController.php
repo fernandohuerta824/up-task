@@ -27,4 +27,22 @@ class LoginController {
         ]);
     }
 
+    public static function restablecerPassword(Router $router) {
+        $router->render('auth/restablecer-password', [
+            'titulo' => 'Restablecer contraseña'
+        ]);
+    }
+
+    public static function mensaje(Router $router) {
+        $router->render('auth/mensaje', [
+            'titulo' => 'Cuenta creada'
+        ]);
+    }
+
+    public static function confirmar(Router $router) {
+        $router->render('auth/confirmar', [
+            'titulo' => 'Cuenta confirmada'
+        ]);
+    }
+
 }

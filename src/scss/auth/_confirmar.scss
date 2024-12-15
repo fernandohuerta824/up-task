@@ -1,0 +1,6 @@
+@use "base/mixins" as m;
+@use "base/variables" as v;
+
+.confirmar {
+    @include m.layout(v.$indigo);
+}
