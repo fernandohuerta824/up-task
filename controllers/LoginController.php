@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Class\Email;
 use Model\Usuario;
 use MVC\Router;
 
@@ -34,8 +35,16 @@ class LoginController {
                 $usuario->crearToken();
                 try {
                     $resultado = $usuario->guardar();
-                    if($resultado)
+                    if($resultado) {
+                        $email = new Email([
+                            'email' => $usuario->email,
+                            'nombre' => $usuario->nombre,
+                            'token' => $usuario->token
+                        ]);
+
+                        $email->enviarConfirmacion();
                         return header('Location: /mensaje');
+                    }
                     
                     $errores['error'][] = 'Algo salio mal, intentelo de nuevo, si el problema persiste contacte a soporte';
                 } catch (\Throwable $th) {

@@ -3,7 +3,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 require 'config/database.php';
 require 'funciones.php';
-
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
 
 use Model\ActiveRecord as ActiveRecord;
 
