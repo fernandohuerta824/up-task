@@ -1,5 +1,6 @@
 <div class="contenedor crear">
     <?php include __DIR__ . '/../template/nombre-sitio.php' ?>
+    <?php include __DIR__ . '/../template/alertas.php' ?>
 
     <div class="contenedor-sm">
         <p class="descripcion-pagina">Crea tu cuenta en UpTask</p>
@@ -12,6 +13,7 @@
                     id="nombre"
                     name="nombre"
                     placeholder="Escribe tu nombre"
+                    value="<?php echo $usuario->nombre ?>"
                 >
             </div>
 
@@ -22,6 +24,7 @@
                     id="email"
                     name="email"
                     placeholder="Escribe tu email"
+                    value="<?php echo $usuario->email ?>"
                 >
             </div>
 
