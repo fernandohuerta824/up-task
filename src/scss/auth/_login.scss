@@ -1,0 +1,28 @@
+@use "base/mixins" as m;
+@use "base/variables" as v;
+
+.login {
+    max-height: 100dvh;
+    overflow: hidden;
+    .uptask {
+        background: linear-gradient(to right, v.$cyan 0%, lighten(v.$cyan, 30) 100%);
+        color: transparent;
+        background-clip: text;
+        font-size: 7rem;
+        text-align: center;
+        margin-top: 5rem;
+        @include m.tablet { 
+            font-size: 10rem;
+        } 
+    }
+
+    .boton {
+        @include m.boton(v.$cyan, v.$blanco)
+    }
+
+    .acciones {
+        a {
+            color: v.$cyan;
+        }
+    }
+}
