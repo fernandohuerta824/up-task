@@ -2,6 +2,8 @@
     <?php include __DIR__ . '/../template/nombre-sitio.php' ?>
     
     <div class="contenedor-sm">
+    <?php include __DIR__ . '/../template/alertas.php' ?>
+
         <p class="descripcion-pagina">Iniciar Sesión</p>
 
         <form class="formulario" method="post">
@@ -12,6 +14,7 @@
                     id="email"
                     name="email"
                     placeholder="Escribe tu email"
+                    value="<?php echo $email ?>"
                 >
             </div>
 

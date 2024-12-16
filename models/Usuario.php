@@ -60,6 +60,33 @@ class Usuario extends ActiveRecord {
         return self::$errores;
     }
 
+    public function validarLogin(): array {
+        $credencialesValidas = true;
+        if(strlen($this->password) < 8) {
+            self::$errores['error'][] = 'La contraseña debe tener al menos ocho caracteres';
+            $credencialesValidas = false;
+        }
+    
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$errores['error'][] = 'Ingresa un email que sea valido';
+            $credencialesValidas = false;
+        }
+
+        if($credencialesValidas) {
+            $usuario = $this->where('email', $this->email);
+            if(!$usuario || $usuario->confirmado === 0 || !password_verify($this->password, $usuario->password))
+                self::$errores['error'][] = 'Email y/o contraseña no validos, o cuenta no confirmada';
+            else {
+                session_start();
+                $_SESSION['id'] = $usuario->id;
+                $_SESSION['nombre'] = $usuario->nombre;
+                $_SESSION['email'] = $usuario->email;
+            }
+        }
+
+        return self::$errores;
+    }
+
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }

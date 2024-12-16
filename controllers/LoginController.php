@@ -8,16 +8,41 @@ use MVC\Router;
 
 class LoginController {
     public static function login(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
+        $auth = new Usuario();
+        $alertas = [];
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $auth->sincronizar($_POST);
+
+            $alertas = $auth->validarLogin();
+
+            if(!isset($alertas['error'])) 
+                return header('Location: /dashboard');
+        }
+
         $router->render('auth/login', [
-            'titulo' => 'Iniciar Sesion'
+            'titulo' => 'Iniciar Sesion',
+            'email' => $auth->email,
+            'errores' => $alertas
         ]);
     }
 
     public static function logout(Router $router) {
-        $router->render('');
+        session_start();
+
+        if(!$_SESSION['id']) return header('Location: /dashboard');
+
+        session_destroy();
+
+        header('Location: /');
     }
 
     public static function crearCuenta(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
         $usuario = new Usuario();
         $errores = [];
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -60,6 +85,9 @@ class LoginController {
     }
 
     public static function olvidarPassword(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
         $alertas = [];
         $usuario = new Usuario();
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -92,6 +120,9 @@ class LoginController {
     }
 
     public static function restablecerPassword(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
         $token = s($_GET['token']);
 
         if(!$token) return header('Location: /');
@@ -123,12 +154,18 @@ class LoginController {
     }
 
     public static function mensaje(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
         $router->render('auth/mensaje', [
             'titulo' => 'Cuenta creada'
         ]);
     }
 
     public static function confirmar(Router $router) {
+        session_start();
+
+        if($_SESSION['id']) return header('Location: /dashboard');
         $token = S($_GET['token']);
         if(!$token) return header('Location: /');
 

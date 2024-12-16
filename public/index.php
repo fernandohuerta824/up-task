@@ -1,5 +1,6 @@
 <?php
 
+use Controller\DashboardController;
 use Controller\LoginController;
 use MVC\Router;
 
@@ -9,7 +10,7 @@ $router = new Router;
 
 $router->get('/', [LoginController::class, 'login']);
 $router->post('/', [LoginController::class, 'login']);
-$router->post('/logout', [LoginController::class, 'logout']);
+$router->get('/logout', [LoginController::class, 'logout']);
 
 $router->get('/crear-cuenta', [LoginController::class, 'crearCuenta']);
 $router->post('/crear-cuenta', [LoginController::class, 'crearCuenta']);
@@ -22,5 +23,7 @@ $router->post('/restablecer-password', [LoginController::class, 'restablecerPass
 
 $router->get('/mensaje', [LoginController::class, 'mensaje']);
 $router->get('/confirmar', [LoginController::class, 'confirmar']);
+
+$router->get('/dashboard', [DashboardController::class, 'dashboard']);
 
 $router->comprobarRutas();
