@@ -5,5 +5,6 @@
         name="nombre"
         id="nombre"
         placeholder="Escribe el nombre del proyecto"
+        value="<?php echo $proyecto->nombre ?>"
     >
 </div>

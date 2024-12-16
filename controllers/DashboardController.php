@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Model\Proyecto;
 use MVC\Router;
 
 class DashboardController {
@@ -21,12 +22,33 @@ class DashboardController {
         session_start();
 
         if(!$_SESSION['id'])
-            return header('Location: /');
+            return header('Location: /proyecto');
         $alertas = [];
+
+        $proyecto = new Proyecto();
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $proyecto->sincronizar(['nombre' => $_POST['nombre']]);
+
+            $alertas = $proyecto->validarProyecto();
+
+            if(!isset($alertas['error'])) {
+                try {
+                    $proyecto->url = md5(uniqid(rand()));
+                    $proyecto->usuarioId = $_SESSION['id'];
+                    $proyecto->guardar();
+                    return header('Location: /proyecto?id=' . $proyecto->url);;
+                } catch (\Throwable $th) {
+                    debug($th);
+                   $alertas['error'][] = 'Algo salio mal, intente de nuevo si el problemas persiste contacte a soporte';
+                }
+            }
+        }
+
         $router->render('dashboard/crear-proyecto', [
             'titulo' => 'Crear proyecto',
             'nombre' => $_SESSION['nombre'],
-            'errores' => $alertas
+            'errores' => $alertas,
+            'proyecto' => $proyecto
         ]);
     }
 
