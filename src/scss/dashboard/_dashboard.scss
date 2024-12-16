@@ -20,4 +20,15 @@
             }
         }
     }
+
+    .formulario {
+        input:not([type=submit]) {
+            background-color: v.$blanco;
+        }
+    }
+
+    .boton {
+        @include m.boton(v.$indigo, v.$blanco);
+        border-radius: 1rem;
+    }
 }
