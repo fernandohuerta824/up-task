@@ -139,6 +139,13 @@ abstract class ActiveRecord {
 
         return self::consultar($query)[0];
     }
+    
+    public static function belongsTo(string $columna, string $valor): array {
+        $valorQuery = self::$db->real_escape_string($valor);
+        $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valorQuery' ";
+        
+        return self::consultar($query);
+    }
 
     public function borrar(): mysqli|bool {
         $query = "DELETE FROM " . static::$tabla . " WHERE id = " . $this->id;

@@ -31,4 +31,52 @@
         @include m.boton(v.$indigo, v.$blanco);
         border-radius: 1rem;
     }
+
+    .no-proyectos {
+        p {
+
+        }
+
+        .boton {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+    }
+
+
+    .listado-proyectos {
+        list-style: none;
+        padding: 0;
+        margin-top: 3rem;
+
+        @include m.grid(1, 2rem);
+
+        @include m.tablet { 
+            @include m.grid(2, 2rem);
+        } 
+
+        @include m.desktop { 
+            @include m.grid(3, 3rem);
+        } 
+
+        .proyecto {
+            background-color: lighten($color: v.$indigo, $amount: 5);
+            min-height: 12rem;
+            display: flex;
+            align-items: center;
+            padding: 2rem;
+            line-height: 2;
+            cursor: pointer;
+            transition: ease .3s;
+            color: v.$blanco;
+            font-weight: bold;
+
+            &:hover {
+                background-color:  darken($color: v.$indigo, $amount: 10);
+                border-radius: 2rem;
+            }
+            
+            
+        }
+    }
 }
