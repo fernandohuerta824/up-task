@@ -2,6 +2,7 @@
 
 use Controller\DashboardController;
 use Controller\LoginController;
+use Controller\TareaController;
 use MVC\Router;
 
 require_once '../utils/app.php';
@@ -30,6 +31,10 @@ $router->post('/crear-proyecto', [DashboardController::class, 'crearProyecto']);
 $router->get('/perfil', [DashboardController::class, 'perfil']);
 $router->get('/proyecto', [DashboardController::class, 'proyecto']);
 
+$router->get('/api/tareas', [TareaController::class, 'tareas']);
+$router->post('/api/tarea', [TareaController::class, 'crearTarea']);
+$router->post('/api/tarea/actualizar', [TareaController::class, 'actualizarTarea']);
+$router->post('/api/tarea/eliminar', [TareaController::class, 'eliminarTarea']);
 
 
 
