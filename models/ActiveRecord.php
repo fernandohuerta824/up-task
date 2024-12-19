@@ -136,7 +136,6 @@ abstract class ActiveRecord {
     public static function where(string $columna, string $valor): ActiveRecord|null {
         $valorQuery = self::$db->real_escape_string($valor);
         $query = "SELECT * FROM " . static::$tabla . " WHERE $columna = '$valorQuery' LIMIT 1";
-
         return self::consultar($query)[0];
     }
     

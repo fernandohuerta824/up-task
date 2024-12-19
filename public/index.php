@@ -35,6 +35,8 @@ $router->get('/api/tareas', [TareaController::class, 'tareas']);
 $router->post('/api/tarea', [TareaController::class, 'crearTarea']);
 $router->post('/api/tarea/actualizar', [TareaController::class, 'actualizarTarea']);
 $router->post('/api/tarea/eliminar', [TareaController::class, 'eliminarTarea']);
+$router->post('/api/tarea/nombre', [TareaController::class, 'cambiarNombre']);
+
 
 
 

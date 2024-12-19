@@ -79,7 +79,7 @@ class TareaController {
     public static function actualizarTarea() {
         try {
             session_start();
-        header('Content-Type: application/json');
+            header('Content-Type: application/json');
 
         if(!$_SESSION['id']) {
             http_response_code(401);
@@ -116,6 +116,60 @@ class TareaController {
     }
 
     public static function eliminarTarea() {
-        echo 'HOla';
+        try {
+            session_start();
+            header('Content-Type: application/json');
+
+            if(!$_SESSION['id']) {
+                http_response_code(401);
+                echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
+                exit;
+            }
+            $proyecto = Proyecto::where('id', $_POST['proyectoId']);
+            if(!$proyecto || $proyecto->usuarioId !== $_SESSION['id']) {
+                http_response_code(403);
+                echo json_encode(['mensaje' => 'Proyecto no encontrado']);
+                exit; 
+            }
+
+            $tarea = Tarea::where('id', $_POST['id']);
+            if(!$tarea) {
+                http_response_code(403);
+                echo json_encode(['mensaje' => 'Tarea no encontrada']);
+                exit; 
+            }
+            $tarea->borrar();
+            http_response_code(200);
+            echo json_encode($tarea);
+            exit;
+        } catch (\Throwable $th) {
+            http_response_code(500);
+            echo json_encode(['mensaje' => 'Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte']);
+            exit; 
+        }
+    }
+
+    public static function cambiarNombre() {
+        session_start();
+        header('Content-Type: application/json');
+
+        if(!$_SESSION['id']) {
+            http_response_code(401);
+            echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
+            exit;
+        }   
+
+        $proyecto = Proyecto::where('url', $_POST['proyectoId']);
+        if(!$proyecto || $proyecto->usuarioId !== $_SESSION['id']) {
+            http_response_code(403);
+            echo json_encode(['mensaje' => 'Proyecto no encontrado']);
+            exit; 
+        }
+        $tarea = Tarea::where('id', $_POST['id']);
+        $tarea->nombre = $_POST['nombre'];
+        $tarea->guardar();
+        http_response_code(200);
+        echo json_encode($tarea);
+        exit;
     }
 }

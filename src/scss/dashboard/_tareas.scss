@@ -33,6 +33,11 @@
 
     p {
         font-size: 1.6rem;
+        cursor: pointer;
+
+        &::selection {
+            background-color: unset;
+        }
     }
 
     .opciones {
