@@ -33,6 +33,39 @@
     /**
      * 
      * @param {{id: int, nombre: string, estado: int, proyectoId: int}} tarea 
+     * @returns {Promise<int|null>}
+     *  
+     */
+    const cambiarTarea = async tarea => {
+        const body = new FormData();
+        body.append('nombre', tarea.nombre);
+        body.append('id', tarea.id);
+        body.append('proyectoId', tarea.proyectoId);
+
+
+        try {
+            const resultado = await fetch('/api/tarea/actualizar', {
+                method: 'POST',
+                body,
+            })
+
+            const datos = await resultado.json();
+            
+            if(resultado.status !== 200) {
+                mostrarAlerta(datos.mensaje, 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
+                return null;
+            }
+
+            return datos.estado;
+        } catch(error) {
+            mostrarAlerta('Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte', 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param {{id: int, nombre: string, estado: int, proyectoId: int}} tarea 
      * @param {HTMLElement|Element} ref 
      */
     const mostrarTarea = (tarea, ref) => {
@@ -49,12 +82,26 @@
         const btnEstado = document.createElement('BUTTON');
         btnEstado.classList.add('estado-tarea', `${estados[tarea.estado].toLowerCase()}`)
         btnEstado.dataset.estado = tarea.estado;
+        btnEstado.dataset.id = tarea.id;
         btnEstado.textContent = estados[tarea.estado];
+        console.log(tarea.estado)
+        btnEstado.addEventListener('dblclick', async e => {
+            const estado = await cambiarTarea(tarea);
+            if(estado === null) return
+            const oldEstado = estado === 0 ? 1 : 0;
+            btnEstado.classList.remove(`${estados[oldEstado].toLowerCase()}`)
+            btnEstado.classList.add(`${estados[estado].toLowerCase()}`)
+            btnEstado.textContent = estados[estado];
+        })
 
         const btnEliminar = document.createElement('BUTTON');
         btnEliminar.classList.add('eliminar-tarea');
         btnEliminar.dataset.id = tarea.id;
         btnEliminar.textContent = 'Eliminar';
+        btnEliminar.addEventListener('click', async e => {
+            
+        })
+
 
         opciones.append(btnEstado, btnEliminar)
         tareaLI.append(nombreTarea, opciones);

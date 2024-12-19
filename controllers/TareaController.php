@@ -77,7 +77,42 @@ class TareaController {
     }
 
     public static function actualizarTarea() {
-        echo 'HOla';
+        try {
+            session_start();
+        header('Content-Type: application/json');
+
+        if(!$_SESSION['id']) {
+            http_response_code(401);
+            echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
+            exit;
+        }
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $proyectoId = $_POST['proyectoId'];
+            $proyecto = Proyecto::where('id', $proyectoId);
+            if(!$proyecto || $proyecto->usuarioId !== $_SESSION['id']) {
+                http_response_code(403);
+                echo json_encode(['mensaje' => 'Proyecto no encontrado']);
+                exit; 
+            }
+            $tarea = Tarea::where('id', $_POST['id']);
+            if(!$tarea) {
+                http_response_code(403);
+                echo json_encode(['mensaje' => 'Tarea no encontrada']);
+                exit; 
+            }
+            $tarea->estado = $tarea->estado === 0 ? 1 : 0;
+            $tarea->guardar();
+            echo json_encode($tarea);
+            exit;
+        }
+        } catch (\Throwable $th) {
+            http_response_code(500);
+            echo json_encode(['mensaje' => 'Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte']);
+            exit; 
+        }
+
+
     }
 
     public static function eliminarTarea() {
