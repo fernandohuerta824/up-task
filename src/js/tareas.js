@@ -4,7 +4,7 @@
         0: 'Pendiente',
         1: 'Completa'
     }
-    
+
     /**
         * @param {string} mensaje
         * @param {string} tipo 
@@ -32,6 +32,37 @@
 
     /**
      * 
+     * @param {{id: int, nombre: string, estado: int, proyectoId: int}} tarea 
+     * @param {HTMLElement|Element} ref 
+     */
+    const mostrarTarea = (tarea, ref) => {
+        const tareaLI = document.createElement('LI');
+        tareaLI.dataset.id = tarea.id;
+        tareaLI.classList.add('tarea');
+
+        const nombreTarea = document.createElement('P');
+        nombreTarea.textContent = tarea.nombre;
+
+        const opciones = document.createElement('DIV');
+        opciones.classList.add('opciones');
+
+        const btnEstado = document.createElement('BUTTON');
+        btnEstado.classList.add('estado-tarea', `${estados[tarea.estado].toLowerCase()}`)
+        btnEstado.dataset.estado = tarea.estado;
+        btnEstado.textContent = estados[tarea.estado];
+
+        const btnEliminar = document.createElement('BUTTON');
+        btnEliminar.classList.add('eliminar-tarea');
+        btnEliminar.dataset.id = tarea.id;
+        btnEliminar.textContent = 'Eliminar';
+
+        opciones.append(btnEstado, btnEliminar)
+        tareaLI.append(nombreTarea, opciones);
+        ref.append(tareaLI);
+    }
+    
+    /**
+     * 
      * @param {[{
      * id : int, 
      * estado: int, 
@@ -40,7 +71,7 @@
      * ]} tareas 
      */
     const mostrarTareas = tareas => {
-        const listadoTareas = document.querySelector('#listado-tareas')
+        const listadoTareas = document.querySelector('#listado-tareas');
         if(tareas.length === 0) {
             const textoNoTareas = document.createElement('LI');
             textoNoTareas.textContent = 'No hay tareas';
@@ -51,30 +82,9 @@
 
 
         tareas.forEach(t => {
-            const tarea = document.createElement('LI');
-            tarea.dataset.id = t.id;
-            tarea.classList.add('tarea');
-
-            const nombreTarea = document.createElement('P');
-            nombreTarea.textContent = t.nombre;
-
-            const opciones = document.createElement('DIV');
-            opciones.classList.add('opciones');
-
-            const btnEstado = document.createElement('BUTTON');
-            btnEstado.classList.add('estado-tarea', `${estados[t.estado].toLowerCase()}`)
-            btnEstado.dataset.estado = t.estado;
-            btnEstado.textContent = estados[t.estado];
-
-            const btnEliminar = document.createElement('BUTTON');
-            btnEliminar.classList.add('eliminar-tarea');
-            btnEliminar.dataset.id = t.id;
-            btnEliminar.textContent = 'Eliminar';
-
-            opciones.append(btnEstado, btnEliminar)
-            tarea.append(nombreTarea, opciones);
-            listadoTareas.append(tarea);
+            mostrarTarea(t, listadoTareas);
         })
+        
     }
 
     (async function(){
@@ -113,6 +123,9 @@
             const data = await res.json();
             if(res.status !== 201)
                 return mostrarAlerta(data.mensaje, 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
+
+            const { datos: tareaObj } = data;
+            mostrarTarea(tareaObj, document.querySelector('#listado-tareas'));
 
         } catch(error) {
             mostrarAlerta('Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte', 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
@@ -164,7 +177,9 @@
                 }
                 agregarTarea(tarea);
                 form.classList.remove('animar')
-                setTimeout(() => modal.remove(), 300);
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
             }
         })
     })

@@ -58,10 +58,11 @@ class TareaController {
                     'estado' => 0, 
                     'proyectoId' => $proyecto->id
                 ]);
-                $tarea->guardar();
+                $tareaId = $tarea->guardar();
                 http_response_code(201);
 
-                echo json_encode(['mensaje' => 'Tarea Agregada', 'datos' => $tarea]);
+                $nuevaTarea = Tarea::encontrarPorID($tareaId);
+                echo json_encode(['mensaje' => 'Tarea Agregada', 'datos' => $nuevaTarea]);
                 exit;
             }
                 

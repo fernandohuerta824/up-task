@@ -1,1 +1,186 @@
-!function(){const e=document.querySelector("#agregar-tarea"),t={0:"Pendiente",1:"Completa"},a=(e,t,a,n=3e3)=>{const o=document.createElement("DIV");o.classList.add("alerta",t),o.textContent=e,a.insertAdjacentElement("beforebegin",o),setTimeout((()=>o.remove()),1e3*n)},n=()=>{const e=new URLSearchParams(window.location.search),{id:t}=Object.fromEntries(e.entries());return t};!async function(){try{const e="/api/tareas?id="+n(),a=await fetch(e),o=await a.json();if(200!==a.status)return;const{tareas:r}=o;(e=>{const a=document.querySelector("#listado-tareas");if(0===e.length){const e=document.createElement("LI");return e.textContent="No hay tareas",e.classList.add("no-tareas"),void a.append(e)}e.forEach((e=>{const n=document.createElement("LI");n.dataset.id=e.id,n.classList.add("tarea");const o=document.createElement("P");o.textContent=e.nombre;const r=document.createElement("DIV");r.classList.add("opciones");const s=document.createElement("BUTTON");s.classList.add("estado-tarea",`${t[e.estado].toLowerCase()}`),s.dataset.estado=e.estado,s.textContent=t[e.estado];const c=document.createElement("BUTTON");c.classList.add("eliminar-tarea"),c.dataset.id=e.id,c.textContent="Eliminar",r.append(s,c),n.append(o,r),a.append(n)}))})(r)}catch(e){console.log(e)}}();e.addEventListener("click",(e=>{const t=document.createElement("DIV");t.classList.add("modal"),t.innerHTML=' \n            <form class="formulario nueva-tarea">\n                <legend>Añande una nueva tarea</legend>\n                <div class="campo">\n                    <label for="tarea">Tarea</label>\n                    <input\n                        type="text"\n                        name="tarea"\n                        id="tarea"\n                        placeholder="Nueva tarea al proyecto"\n                    />\n                </div>\n                <div class="opciones">\n                    <input type="submit" class="submit-nueva-tarea" value="Añadir tarea"/>\n                    <button type="button" class="cerrar-modal" value="Añadir tarea">Cancelar</button>\n\n                </div>\n            </form>\n        ',document.querySelector(".dashboard").appendChild(t);const o=document.querySelector(".formulario"),r=document.querySelector("#tarea");setTimeout((()=>{o.classList.add("animar")}),0),t.addEventListener("click",(async e=>{if(e.preventDefault(),(e.target.classList.contains("modal")||e.target.classList.contains("cerrar-modal"))&&(o.classList.remove("animar"),setTimeout((()=>t.remove()),300)),e.target.classList.contains("submit-nueva-tarea")){const e=r.value.trim();if(!e)return void a("El nombre es obligatorio","error",o.querySelector(".campo"));(async e=>{const t=new FormData;t.append("nombre",e),t.append("url",n());try{const e=await fetch("/api/tarea",{method:"POST",body:t}),n=await e.json();if(201!==e.status)return a(n.mensaje,"error",document.querySelector(".contenido .contenedor-nueva-tarea"),6)}catch(e){a("Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte","error",document.querySelector(".contenido .contenedor-nueva-tarea"),6)}})(e),o.classList.remove("animar"),setTimeout((()=>t.remove()),300)}}))}))}();
+(function(){
+    const nuevaTareaBtn = document.querySelector('#agregar-tarea');
+    const estados = {
+        0: 'Pendiente',
+        1: 'Completa'
+    }
+
+    /**
+        * @param {string} mensaje
+        * @param {string} tipo 
+        * @param {HTMLElement|Element} ref 
+        * @param {int} segundos 
+        * 
+    */
+    const mostrarAlerta = (mensaje, tipo, ref, segundos = 3000) => {
+        const alerta = document.createElement('DIV');
+        alerta.classList.add('alerta', tipo);
+        alerta.textContent = mensaje;
+        ref.insertAdjacentElement('beforebegin',alerta);
+        setTimeout(() => alerta.remove(), segundos * 1000);
+    }
+    
+    /**
+     * 
+     * @returns {string}
+     */
+    const obtenerIdProyecto = () => {
+        const proyectoParams = new URLSearchParams(window.location.search);
+        const { id } = Object.fromEntries(proyectoParams.entries())
+        return id;
+    }
+
+    /**
+     * 
+     * @param {{id: int, nombre: string, estado: int, proyectoId: int}} tarea 
+     * @param {HTMLElement|Element} ref 
+     */
+    const mostrarTarea = (tarea, ref) => {
+        const tareaLI = document.createElement('LI');
+        tareaLI.dataset.id = tarea.id;
+        tareaLI.classList.add('tarea');
+
+        const nombreTarea = document.createElement('P');
+        nombreTarea.textContent = tarea.nombre;
+
+        const opciones = document.createElement('DIV');
+        opciones.classList.add('opciones');
+
+        const btnEstado = document.createElement('BUTTON');
+        btnEstado.classList.add('estado-tarea', `${estados[tarea.estado].toLowerCase()}`)
+        btnEstado.dataset.estado = tarea.estado;
+        btnEstado.textContent = estados[tarea.estado];
+
+        const btnEliminar = document.createElement('BUTTON');
+        btnEliminar.classList.add('eliminar-tarea');
+        btnEliminar.dataset.id = tarea.id;
+        btnEliminar.textContent = 'Eliminar';
+
+        opciones.append(btnEstado, btnEliminar)
+        tareaLI.append(nombreTarea, opciones);
+        ref.append(tareaLI);
+    }
+    
+    /**
+     * 
+     * @param {[{
+     * id : int, 
+     * estado: int, 
+     * nombre: string, 
+     * proyectoId: int}
+     * ]} tareas 
+     */
+    const mostrarTareas = tareas => {
+        const listadoTareas = document.querySelector('#listado-tareas');
+        if(tareas.length === 0) {
+            const textoNoTareas = document.createElement('LI');
+            textoNoTareas.textContent = 'No hay tareas';
+            textoNoTareas.classList.add('no-tareas');
+            listadoTareas.append(textoNoTareas);
+            return;
+        }
+
+
+        tareas.forEach(t => {
+            mostrarTarea(t, listadoTareas);
+        })
+        
+    }
+
+    (async function(){
+        try {
+            const url = '/api/tareas?id=' + obtenerIdProyecto();
+
+            const resultado = await fetch(url);
+
+            const datos = await resultado.json();
+
+            if(resultado.status !== 200)
+                return;
+
+            const { tareas } = datos;
+
+            mostrarTareas(tareas);
+        } catch(error) {
+            console.log(error);
+        }
+    })()
+
+    /**
+     * 
+     * @param {string} tarea 
+     */
+    const agregarTarea = async tarea => {
+        const datos = new FormData();
+        datos.append('nombre', tarea);
+        datos.append('url', obtenerIdProyecto());
+
+        try {
+            const res = await fetch('/api/tarea', {
+                method: 'POST',
+                body: datos
+            })
+            const data = await res.json();
+            if(res.status !== 201)
+                return mostrarAlerta(data.mensaje, 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
+
+            const { datos: tareaObj } = data;
+            mostrarTarea(tareaObj, document.querySelector('#listado-tareas'));
+
+        } catch(error) {
+            mostrarAlerta('Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte', 'error', document.querySelector('.contenido .contenedor-nueva-tarea'), 6)
+        }
+    }
+
+    nuevaTareaBtn.addEventListener('click', e => {
+        const modal = document.createElement('DIV');
+        modal.classList.add('modal');
+        modal.innerHTML =` 
+            <form class="formulario nueva-tarea">
+                <legend>Añande una nueva tarea</legend>
+                <div class="campo">
+                    <label for="tarea">Tarea</label>
+                    <input
+                        type="text"
+                        name="tarea"
+                        id="tarea"
+                        placeholder="Nueva tarea al proyecto"
+                    />
+                </div>
+                <div class="opciones">
+                    <input type="submit" class="submit-nueva-tarea" value="Añadir tarea"/>
+                    <button type="button" class="cerrar-modal" value="Añadir tarea">Cancelar</button>
+
+                </div>
+            </form>
+        `;
+
+        document.querySelector('.dashboard').appendChild(modal);
+        const form = document.querySelector('.formulario');
+        const tareaInput = document.querySelector('#tarea');
+        setTimeout(() => {
+            form.classList.add('animar');
+        }, 0);
+
+        modal.addEventListener('click', async e  => {
+            e.preventDefault();
+            if(e.target.classList.contains('modal') || e.target.classList.contains('cerrar-modal')) {
+                form.classList.remove('animar')
+                setTimeout(() => modal.remove(), 300);
+            }
+
+            if(e.target.classList.contains('submit-nueva-tarea')) {
+                const tarea = tareaInput.value.trim();
+                if(!tarea) {
+                    mostrarAlerta('El nombre es obligatorio', 'error', form.querySelector('.campo'));
+                    return;
+                }
+                agregarTarea(tarea);
+                form.classList.remove('animar')
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        })
+    })
+})()
