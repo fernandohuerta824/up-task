@@ -1,6 +1,10 @@
 (function(){
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
-
+    const estados = {
+        0: 'Pendiente',
+        1: 'Completa'
+    }
+    
     /**
         * @param {string} mensaje
         * @param {string} tipo 
@@ -15,7 +19,7 @@
         ref.insertAdjacentElement('beforebegin',alerta);
         setTimeout(() => alerta.remove(), segundos * 1000);
     }
-
+    
     /**
      * 
      * @returns {string}
@@ -25,6 +29,72 @@
         const { id } = Object.fromEntries(proyectoParams.entries())
         return id;
     }
+
+    /**
+     * 
+     * @param {[{
+     * id : int, 
+     * estado: int, 
+     * nombre: string, 
+     * proyectoId: int}
+     * ]} tareas 
+     */
+    const mostrarTareas = tareas => {
+        const listadoTareas = document.querySelector('#listado-tareas')
+        if(tareas.length === 0) {
+            const textoNoTareas = document.createElement('LI');
+            textoNoTareas.textContent = 'No hay tareas';
+            textoNoTareas.classList.add('no-tareas');
+            listadoTareas.append(textoNoTareas);
+            return;
+        }
+
+
+        tareas.forEach(t => {
+            const tarea = document.createElement('LI');
+            tarea.dataset.id = t.id;
+            tarea.classList.add('tarea');
+
+            const nombreTarea = document.createElement('P');
+            nombreTarea.textContent = t.nombre;
+
+            const opciones = document.createElement('DIV');
+            opciones.classList.add('opciones');
+
+            const btnEstado = document.createElement('BUTTON');
+            btnEstado.classList.add('estado-tarea', `${estados[t.estado].toLowerCase()}`)
+            btnEstado.dataset.estado = t.estado;
+            btnEstado.textContent = estados[t.estado];
+
+            const btnEliminar = document.createElement('BUTTON');
+            btnEliminar.classList.add('eliminar-tarea');
+            btnEliminar.dataset.id = t.id;
+            btnEliminar.textContent = 'Eliminar';
+
+            opciones.append(btnEstado, btnEliminar)
+            tarea.append(nombreTarea, opciones);
+            listadoTareas.append(tarea);
+        })
+    }
+
+    (async function(){
+        try {
+            const url = '/api/tareas?id=' + obtenerIdProyecto();
+
+            const resultado = await fetch(url);
+
+            const datos = await resultado.json();
+
+            if(resultado.status !== 200)
+                return;
+
+            const { tareas } = datos;
+
+            mostrarTareas(tareas);
+        } catch(error) {
+            console.log(error);
+        }
+    })()
 
     /**
      * 

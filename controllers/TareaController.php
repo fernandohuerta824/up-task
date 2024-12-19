@@ -7,7 +7,31 @@ use Model\Tarea;
 
 class TareaController {
     public static function tareas() {
-        echo 'HOla';
+        try {
+            session_start();
+
+            header('Content-Type: application/json');
+
+            if(!$_SESSION['id']) {
+                http_response_code(401);
+                echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
+                exit;
+            }
+
+            $proyecto = Proyecto::where('url', $_GET['id'] ?? 'anything');
+            if(!$proyecto || $proyecto->usuarioId !== $_SESSION['id']) {
+                http_response_code(403);
+                echo json_encode(['mensaje' => 'Proyecto no encontrado']);
+                exit; 
+            }
+
+            $tareas = Tarea::belongsTo('proyectoId', $proyecto->id);
+            echo json_encode(['mensaje' => 'Tareas encontradas', 'tareas' => $tareas] );
+        } catch (\Throwable $th) {
+            http_response_code(500);
+            echo json_encode(['mensaje' => 'Algo salio mal, intentelo de nuevo, si el problema persiste contacte al soporte']);
+            exit; 
+        }
     }
 
     public static function crearTarea() {

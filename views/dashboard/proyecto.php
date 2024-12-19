@@ -6,6 +6,10 @@
                <span>&#43;</span>  Nueva Tarea
             </button>
         </div>
+
+        <ul id="listado-tareas">
+            
+        </ul>
     </div>
 
 <?php include __DIR__ . '/footer.php' ?>
