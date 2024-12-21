@@ -52,7 +52,7 @@ class Email {
                     <p style='font-size: 1.5rem; color: #6b7280; line-height: 1.8;'>
                         Para confirmar tu cuenta, presiona el siguiente enlace:
                     </p>
-                    <a href='http://192.168.100.188:3000/confirmar?token=" . s($this->token) . "' 
+                    <a href='" . $_ENV['SERVER_HOST'] .  "/confirmar?token=" . s($this->token) . "' 
                     style='display: inline-block; background-color: #F59E0B; color: #ffffff; text-decoration: none; padding: 10px 20px; font-size: 1.5rem; border-radius: 5px; text-align: center; margin: 20px 0;'>
                         Confirmar cuenta
                     </a>
@@ -82,7 +82,7 @@ class Email {
                 <p style='font-size: 1.5rem; color: #6b7280; line-height: 1.8;'>
                     Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para proceder:
                 </p>
-                <a href='http://192.168.100.188:3000/restablecer-password?token=" . s($this->token) . "' 
+                <a href='" . $_ENV['SERVER_HOST'] .  "/restablecer-password?token=" . s($this->token) . "' 
                 style='display: inline-block; background-color: #DB2777; color: #ffffff; text-decoration: none; padding: 10px 20px; font-size: 1.5rem; border-radius: 5px; text-align: center; margin: 20px 0;'>
                     Restablecer Contraseña
                 </a>

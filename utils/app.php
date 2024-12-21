@@ -8,4 +8,4 @@ $dotenv->safeLoad();
 
 use Model\ActiveRecord as ActiveRecord;
 
-ActiveRecord::setDB(conectarDB('localhost', 'root', 'cr7eselmejorjugador', 'up_task', 3306));
+ActiveRecord::setDB(conectarDB($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME'], 3306));
