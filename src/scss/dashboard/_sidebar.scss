@@ -2,19 +2,49 @@
 @use "base/variables" as v;
 
 .sidebar {
+    opacity: 0;
     background-color: v.$indigo;
-    padding: 2rem;
+    height: 0;
+    transition: opacity ease .3s;
+    width: 0;
+    top: -30rem;
+    position: absolute;
+
+    &.mostrar {
+        width: auto;
+        position: absolute;
+        padding: 2rem;
+        opacity: 1;
+        height: auto;
+        top: 8rem;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+
+    @include m.tablet { 
+        height: auto;
+        opacity: 1;
+        padding: 2rem;
+        width: auto;
+        position: static;
+    } 
 
     h2 {
+        display: none;
         padding: 2rem;
         color: v.$blanco;
         margin: 0;
         text-align: center;
+        @include m.tablet { 
+            display: block;
+        } 
     }
 
     .sidebar-nav {
-        margin-top: 5rem;
-
+        @include m.tablet { 
+            margin-top: 5rem;
+        } 
         a {
             color: v.$blanco;
             display: block;
@@ -31,6 +61,17 @@
                 border-left: 1rem solid darken($color: v.$indigo, $amount: 40);
             }
         }
+    }
 
+    .cerra-sesion-mobile {
+        margin-top: 5rem;
+        text-align: center;
+
+        @include m.tablet { 
+            display: none;
+        } 
+        .cerrar-sesion {
+            @include m.boton(v.$rojo, v.$blanco)
+        }
     }
 }

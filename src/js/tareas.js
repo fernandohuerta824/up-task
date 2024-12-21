@@ -57,7 +57,7 @@
                     />
                 </div>
                 <div class="opciones">
-                    <input type="submit" class="submit-nueva-tarea" value="${editar ? 'Editar nombre': 'Añadir tarea'}"/>
+                    <button type="button" class="submit-nueva-tarea">${editar ? 'Editar nombre': 'Añadir tarea'}</button>
                     <button type="button" class="cerrar-modal" value="Añadir tarea">Cancelar</button>
 
                 </div>

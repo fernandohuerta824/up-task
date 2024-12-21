@@ -87,6 +87,28 @@ class Usuario extends ActiveRecord {
         return self::$errores;
     }
 
+    public function validarPerfil(): array {
+        $datosValidos = true;
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$errores['error'][] = 'Ingresa un email que sea valido';
+            $datosValidos = false;
+        }
+
+        if(!$this->nombre) {
+            self::$errores['error'][] = 'El nombre es obligatorio';
+            $datosValidos = false;
+        }
+
+        if($datosValidos) {
+            $email = s($this->email);
+            $usuario = Usuario::SQL("SELECT * FROM usuarios WHERE email = '$email' AND id != $this->id");
+
+            if(count($usuario)) 
+                self::$errores['error'][] = 'El correo ya existe';           
+        }
+        return self::$errores;
+    }
+
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
     }

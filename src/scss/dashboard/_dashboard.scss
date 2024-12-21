@@ -3,6 +3,7 @@
 
 .dashboard {
     background-color: v.$grisClaro;
+    min-height: 100dvh;
     @include m.tablet {
         overflow: hidden;
         display: flex;
@@ -47,6 +48,20 @@
         .boton {
             display: inline-block;
             margin-top: 1rem;
+        }
+    }
+
+    .enlace {
+        color: v.$indigo;
+        border: 1px solid v.$indigo;
+        display: inline-block;
+        padding: 1rem 2rem;
+        transition: ease .1s;
+        font-weight: bold;
+        &:hover {
+            color: v.$blanco;
+            background-color: v.$indigo;
+
         }
     }
 
