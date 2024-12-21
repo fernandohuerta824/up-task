@@ -1,0 +1,20 @@
+@use "base/variables" as v;
+
+@media (prefers-color-scheme: dark) {
+    $grisOscuro: #16161a;
+    body,
+    .principal,
+    .barra,
+    .modal form.formulario{
+        background-color: $grisOscuro;
+    }
+
+    .tagline,
+    .descripcion-pagina,
+    .nombre-pagina,
+    label,
+    p,
+    legend {
+        color: v.$blanco;
+    }
+}

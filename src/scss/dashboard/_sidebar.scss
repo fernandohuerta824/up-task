@@ -7,7 +7,7 @@
     height: 0;
     transition: opacity ease .3s;
     width: 0;
-    top: -30rem;
+    top: -50rem;
     position: absolute;
 
     &.mostrar {
@@ -20,6 +20,7 @@
         right: 0;
         left: 0;
         bottom: 0;
+        transition: opacity ease .3s;
     }
 
     @include m.tablet { 
