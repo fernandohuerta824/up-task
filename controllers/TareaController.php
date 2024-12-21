@@ -12,7 +12,7 @@ class TareaController {
 
             header('Content-Type: application/json');
 
-            if(!$_SESSION['id']) {
+            if(!isset($_SESSION['id'])) {
                 http_response_code(401);
                 echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
                 exit;
@@ -40,7 +40,7 @@ class TareaController {
         try {
             header('Content-Type: application/json');
 
-            if(!$_SESSION['id']) {
+            if(!isset($_SESSION['id'])) {
                 http_response_code(401);
                 echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
                 exit;
@@ -81,7 +81,7 @@ class TareaController {
             session_start();
             header('Content-Type: application/json');
 
-        if(!$_SESSION['id']) {
+        if(!isset($_SESSION['id'])) {
             http_response_code(401);
             echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
             exit;
@@ -120,7 +120,7 @@ class TareaController {
             session_start();
             header('Content-Type: application/json');
 
-            if(!$_SESSION['id']) {
+            if(!isset($_SESSION['id'])) {
                 http_response_code(401);
                 echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
                 exit;
@@ -153,7 +153,7 @@ class TareaController {
         session_start();
         header('Content-Type: application/json');
 
-        if(!$_SESSION['id']) {
+        if(!isset($_SESSION['id'])) {
             http_response_code(401);
             echo json_encode(['mensaje' => 'Fallo en auntenticarte, inicia sesion de nuevo']);
             exit;

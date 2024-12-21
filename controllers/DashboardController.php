@@ -10,7 +10,7 @@ class DashboardController {
     public static function dashboard(Router $router) {
         session_start();
 
-        if(!$_SESSION['id'])
+        if(!isset($_SESSION['id']))
             return header('Location: /');
 
         $proyectos = Proyecto::belongsTo('usuarioId', $_SESSION['id']);
@@ -26,7 +26,7 @@ class DashboardController {
     public static function crearProyecto(Router $router) {
         session_start();
 
-        if(!$_SESSION['id'])
+        if(!isset($_SESSION['id']))
             return header('Location: /proyecto');
         $alertas = [];
 
@@ -62,7 +62,7 @@ class DashboardController {
 
         $usuario = Usuario::encontrarPorID($_SESSION['id']);
         $alertas = [];
-        if(!$_SESSION['id'])
+        if(!isset($_SESSION['id']))
             return header('Location: /');
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -91,7 +91,7 @@ class DashboardController {
     public static function cambiarPassword(Router $router) {
         session_start();
 
-        if(!$_SESSION['id'])
+        if(!isset($_SESSION['id']))
             return header('Location: /');
 
         $alertas = [];    
@@ -128,7 +128,7 @@ class DashboardController {
     public static function proyecto(Router $router) {
         session_start();
 
-        if(!$_SESSION['id'])
+        if(!isset($_SESSION['id']))
             return header('Location: /');
         $url = s($_GET['id']);
         if(!$url) 
